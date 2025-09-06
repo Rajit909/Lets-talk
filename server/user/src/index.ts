@@ -17,7 +17,7 @@ app.use(cookieParser());
 // }
 
 connectDb()
-// redisClient
+redisClient
 connectRabbitMQ();
 
 

@@ -1,5 +1,5 @@
 import express from 'express'
-// import { User } from '../model/User.model.js'
+import { User } from '../model/User.model.js'
 import TryCatch from '../lib/config/AsyncHandler.js'
 import redisClient from '../lib/config/redisdb.js';
 import { publishToQue } from '../lib/config/rabbitmq.js';
@@ -39,3 +39,37 @@ export const loginUser = TryCatch(async(req, res)=>{
         message: "Otp sent to your email."
     })
 })
+
+
+export const verifyUser = TryCatch(async(req, res) => {
+    const { email, otp: enteredOtp} = req.body;
+
+    if(!email  || enteredOtp){
+        res.status(400).json({
+            message: "Email and Otp Required!"
+        });
+        return;
+    }
+
+    const otpKey = `otp:${email}`
+
+    const storedOtp = await redisClient.get(otpKey)
+
+    if(!storedOtp  || storedOtp !== enteredOtp ) {
+        res.status(400).json({
+            message: "Invalid OTP"
+        });
+        return;
+    }
+
+    await redisClient.del(otpKey);
+
+    let user = await User.findOne({email})
+   
+    if(!user){
+        const name = email.slice(0, 8);
+        user = await User.create({name, email});
+    }
+
+    // const token
+}) 
