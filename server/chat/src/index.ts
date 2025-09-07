@@ -1,5 +1,6 @@
 import express from 'express';
 import cookieParser from 'cookie-parser'
+import connectDb from './lib/config/db.js';
 
 const app = express();
 
@@ -13,7 +14,7 @@ app.use(cookieParser());
 //     credentials:true
 // }
 
-// connectDb()
+connectDb()
 // redisClient
 // connectRabbitMQ();
 
