@@ -1,6 +1,7 @@
 import express from 'express';
 import cookieParser from 'cookie-parser'
 import connectDb from './lib/config/db.js';
+import chatRoutes from './routes/chat.route.js'
 
 const app = express();
 
@@ -18,7 +19,7 @@ connectDb()
 // redisClient
 // connectRabbitMQ();
 
-
+app.use("/api/v1", chatRoutes)
 
 
 app.get('/', (_, res) => {   
